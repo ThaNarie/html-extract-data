@@ -1,4 +1,4 @@
-[![Travis](https://img.shields.io/travis/thanarie/html-extract-data.svg?maxAge=2592000)](https://travis-ci.org/thanarie/html-extract-data)
+[![Travis](https://img.shields.io/travis/ThaNarie/html-extract-data.svg?maxAge=2592000)](https://travis-ci.org/ThaNarie/html-extract-data)
 [![npm](https://img.shields.io/npm/v/html-extract-data.svg?maxAge=2592000)](https://www.npmjs.com/package/html-extract-data)
 [![npm](https://img.shields.io/npm/dm/html-extract-data.svg?maxAge=2592000)](https://www.npmjs.com/package/html-extract-data)
 
@@ -183,7 +183,7 @@ and [Node.js](http://nodejs.org/) installed.
 
 Clone a copy of the repo:
 ```sh
-git clone https://github.com/thanarie/html-extract-data.git
+git clone https://github.com/ThaNarie/html-extract-data.git
 ```
 
 Change to the html-extract-data directory:
