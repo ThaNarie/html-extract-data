@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src/",
+    "rootDir": "./src/",
+    "jsx": "react",
+    "module": "es2015",
+    "noEmit": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2017"
+    ]
+  },
+  "include": [
+    "./src/**/*",
+    "./types/**/*.d.ts"
+  ]
+}

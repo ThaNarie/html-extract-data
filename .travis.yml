@@ -1,0 +1,27 @@
+language: node_js
+
+node_js:
+  - 'stable'
+  - '8'
+
+sudo: false
+
+script:
+  - npm run build
+  - npm run validate
+
+after_script:
+  - node_modules/.bin/coveralls < coverage/lcov.info
+
+before_deploy:
+  - npm run build:dist && node ./script/package-dist.js
+
+deploy:
+  - provider: npm
+    email: 'thanarie@gmail.com'
+    api_key:
+      secure: ''
+    on:
+      tags: true
+      node: '8'
+    skip_cleanup: true

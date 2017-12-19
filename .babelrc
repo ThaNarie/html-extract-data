@@ -1,0 +1,22 @@
+{
+  "presets": [
+    ["@babel/env", {
+      "targets": {
+        "browsers": ["last 2 versions"],
+        "node": "8"
+      }
+    }],
+    "@babel/preset-stage-3",
+    "@babel/typescript"
+  ],
+  "plugins": [
+  ],
+  "env": {
+    "test": {
+      "plugins": [ "istanbul" ]
+    }
+  },
+  "ignore": [
+    "src/lib/vendor/**/*.*"
+  ]
+}
