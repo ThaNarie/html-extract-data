@@ -12,7 +12,7 @@ script:
   - yarn test
 
 before_deploy:
-  - npm yarn build
+  - yarn build
 
 deploy:
   - provider: npm
