@@ -167,7 +167,7 @@ Will output:
 
 ### Production
 
-This library uses joi to validate the input config structure, but it's quite large.
+This library uses [Joi](https://github.com/hapijs/joi) to validate the input config structure, but it's quite large.
 That's why they are added within `process.env.NODE_ENV !== 'production'` checks, which means
 that your build process can strip it out.
 
