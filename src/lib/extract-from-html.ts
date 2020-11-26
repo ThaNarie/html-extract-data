@@ -1,4 +1,4 @@
-import mergeWith from 'lodash-es/mergeWith';
+import mergeWith from 'lodash.mergewith';
 import { extractData } from './extract-data';
 import { extractFromElement } from './extract-from-element';
 import type { ExtractConfig, ExtractDataConfig } from './types';
