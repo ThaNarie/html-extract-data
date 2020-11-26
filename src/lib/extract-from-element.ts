@@ -1,50 +1,91 @@
-import { validateSchema } from './validation';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ConvertConfig, ElementConfig, ExtractElementAtom, ExtractElementData } from './types';
 
-export function extractFromElement(element, config) {
+/**
+ * Extracts information from as single element, which can be:
+ * - an attribute
+ * - the text contents
+ * - the HTML content
+ * - or a "data" object with all of the above things above for each key if you need to extract
+ *   multiple things from the same element
+ *
+ * @param element
+ * @param config
+ */
+export function extractFromElement<T>(
+  element: HTMLElement | null,
+  config: ElementConfig,
+): T | null {
   // no element found, return null value
   if (!element) {
     return null;
   }
 
-  const validatedConfig = validateSchema(config, elementScheme);
-
-  let value;
+  let value: string | null | Record<string, unknown>;
   // extract multiple properties from the same element
-  if (validatedConfig.data) {
-    value = extractDataFromElement(element, validatedConfig.data);
-  } else if (validatedConfig.attr) {
+  if (config.data) {
+    value = unpackNestedDataConfig(element, config.data);
+  } else if (config.attr) {
     // extract attribute
-    value = element.getAttribute(validatedConfig.attr);
+    value = element.getAttribute(config.attr);
   } else {
     // extract text or html value
-    value = element[validatedConfig.html ? 'innerHTML' : 'textContent'];
+    value = element[config.html ? 'innerHTML' : 'textContent'];
   }
 
   // convert value before returning
-  if (validatedConfig.convert) {
-    value = convertValue(value, validatedConfig.convert);
+  if (config.convert) {
+    value = convertValue(value, config.convert);
   }
-  return value;
+  return value as any;
 }
 
-function extractDataFromElement(element, data) {
+/**
+ * Does the shorthand expansion for atom-level (nested data) config
+ * - string = attribute
+ * - true = text
+ * - { html : true } = html
+ *
+ * Feeds the unpacked shortcuts back into extractFromElement to be resolved data
+ *
+ * @param element
+ * @param data
+ */
+function unpackNestedDataConfig(element: HTMLElement, data: Record<string, ExtractElementData>) {
   return Object.keys(data).reduce((acc, key) => {
     const dataConfig = data[key];
     const isAttr = typeof dataConfig === 'string';
     const isText = dataConfig === true;
     acc[key] = extractFromElement(
       element,
-      isAttr ? { attr: dataConfig } : isText ? {} : dataConfig,
+      isAttr ? { attr: dataConfig as string } : isText ? {} : (dataConfig as ExtractElementAtom),
     );
     return acc;
-  }, {});
+  }, {} as Record<string, unknown>);
 }
 
-function convertValue(value, to) {
+/**
+ * Handles conversions after the information has been extracted
+ * - can be a custom function
+ * - or a built-in default conversion
+ *
+ * @param value
+ * @param to
+ */
+function convertValue(value: string | null | Record<string, unknown>, to: ConvertConfig) {
   if (typeof to === 'function') {
     // usr func
     return to(value);
   }
+
+  if (value === null) {
+    return null;
+  }
+
+  if (typeof value === 'object') {
+    return value;
+  }
+
   // built-in
   switch (to) {
     case 'number':
@@ -56,46 +97,4 @@ function convertValue(value, to) {
     case 'date':
       return new Date(value);
   }
-}
-
-const baseKeys = (() => {
-  const isProd = process.env.NODE_ENV === 'production';
-  /* istanbul ignore if */
-  if (isProd) return {};
-
-  const Joi = require('./vendor/joi-browser');
-  return {
-    attr: Joi.string(),
-    convert: [Joi.func().arity(1), Joi.string().regex(/^(number|float|boolean|date)$/)],
-    html: Joi.bool(),
-  };
-})();
-
-const elementScheme = (() => {
-  const isProd = process.env.NODE_ENV === 'production';
-  /* istanbul ignore if */
-  if (isProd) return {};
-
-  const Joi = require('./vendor/joi-browser');
-  return Joi.object().keys(getSchemaKeys());
-})();
-
-export function getDataSchema() {
-  const isProd = process.env.NODE_ENV === 'production';
-  /* istanbul ignore if */
-  if (isProd) return {};
-
-  const Joi = require('./vendor/joi-browser');
-  return Joi.object().pattern(/.*/, [Joi.string(), Joi.bool(), Joi.object().keys(baseKeys)]);
-}
-
-export function getSchemaKeys(): any {
-  const isProd = process.env.NODE_ENV === 'production';
-  /* istanbul ignore if */
-  if (isProd) return {};
-
-  return {
-    ...baseKeys,
-    data: getDataSchema(),
-  };
 }

@@ -4,7 +4,8 @@ cache: yarn
 
 node_js:
   - 'stable'
-  - '8'
+  - '14'
+  - '12'
 
 sudo: false
 
@@ -21,5 +22,5 @@ deploy:
       secure: 'PzngzaE16W+kMq0FKQWc77m20Zvo3+6O7JCDjdE8WSD6A6zs573fEQKtie0QGH1hSW99pakGN+kVdCFPkXZaj9by61cfwWpQ0WZ4S3umyCQ1Otlh8tblqC6pVdJ/4XIDjghMFtRsg5NX6rjL2wwy0XVnt1dik4F/bM8Pkabjgu7StvxPRK3q4ClQn8t8Qgu7XqLqTUGd4SyjayOhH4AnjerI27/qFwjMUh/aQU7jPuwwxxxn285dIcc82GaGDtjJzcozTTe7cUVkTmPBzjrH2CQAgyFGbYNIjcb8Zdvphpe7wWvQsyvWDKs0e999hpBrckWLw8JuUS4WMhjhelH5TagkF75fcTGVVfDWn119E9IxN3IwQbZTCLmewyaKSR7Bqq+O1F99b6VPQ0tEt4SyXjIMND+V82JbURfFS2WqU5lfAeK10H1dMoFnKA2NkYbamCtlH79sjVCUEllGlUNaQOErbKINdDEJfSW5VTxM7MGbAOsTnoIHSduLm+4bfFZyeunbySa7Fg2uukZKnDuCeVS315ZmTiAedR6wcxgw2MgTBQchw9sLlYcBtfrxk37Bo/bgdPYOlbcv1ScpIhZeQkdWIB6gHxECjxsUE6kPJgL2OqjMlLC3sjxLCm3tBQ04ueD2w73kwPTm/MPFomvUFfTq/Gpqg5nYLF1Yp4RQ360='
     on:
       tags: true
-      node: '8'
+      node: 'stable'
     skip_cleanup: true

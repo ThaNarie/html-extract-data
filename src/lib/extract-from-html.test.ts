@@ -1,7 +1,5 @@
-import { extractFromHTML } from '../../src/lib/extract-from-html';
-import { createHTML } from '../helpers';
-
-const expect = require('chai').expect;
+import { extractFromHTML } from './extract-from-html';
+import { createHTML } from './testUtils';
 
 describe('extractFromHTML', () => {
   it('should extract an object', () => {
@@ -41,8 +39,8 @@ describe('extractFromHTML', () => {
         alt: 'foobar',
       },
       image2: {
-        src: "foo.jpg",
-        alt: "foobar",
+        src: 'foo.jpg',
+        alt: 'foobar',
       },
       link: {
         href: 'http://www.google.com',
@@ -51,35 +49,32 @@ describe('extractFromHTML', () => {
       },
     };
 
-    const actual = extractFromHTML(
-      html,
-      {
-        query: '.grid-item',
-        data: {
-          title: 'h2',
-          description: { query: 'p', html: true },
-          tags: { query: '.tags > .tag', list: true },
-          image: (extract) => ({
-            src: extract('.js-image', { attr: 'src' }),
-            alt: extract('.js-image', { attr: 'alt' }),
+    const actual = extractFromHTML(html, {
+      query: '.grid-item',
+      data: {
+        title: 'h2',
+        description: { query: 'p', html: true },
+        tags: { query: '.tags > .tag', list: true },
+        image: (extract) => ({
+          src: extract('.js-image', { attr: 'src' }),
+          alt: extract('.js-image', { attr: 'alt' }),
+        }),
+        image2: (extract) =>
+          extract('.js-image', {
+            data: { src: 'src', alt: 'alt' },
           }),
-          image2: (extract) =>
-            extract('.js-image', {
-              data: { src: 'src', alt: 'alt' }
-            }),
-          link: {
-            query: 'a',
-            data: {
-              href: 'href',
-              target: 'target',
-              text: true,
-            },
+        link: {
+          query: 'a',
+          data: {
+            href: 'href',
+            target: 'target',
+            text: true,
           },
         },
       },
-    );
+    });
 
-    expect(actual).to.deep.equal(expected);
+    expect(actual).toEqual(expected);
   });
 
   it('should extract an array', () => {
@@ -130,26 +125,22 @@ describe('extractFromHTML', () => {
         },
       },
     ];
-    const actual = extractFromHTML(
-      html,
-      {
-        query: '.grid-item',
-        list: true,
-        data: {
-          title: 'h2',
-          description: { query: 'p', html: true },
-          tags: { query: '.tags > .tag', list: true },
-          image: (extract) => ({
-            src: extract('.js-image', { attr: 'src' }),
-            alt: extract('.js-image', { attr: 'alt' }),
-          }),
-        },
+    const actual = extractFromHTML(html, {
+      query: '.grid-item',
+      list: true,
+      data: {
+        title: 'h2',
+        description: { query: 'p', html: true },
+        tags: { query: '.tags > .tag', list: true },
+        image: (extract) => ({
+          src: extract('.js-image', { attr: 'src' }),
+          alt: extract('.js-image', { attr: 'alt' }),
+        }),
       },
-    );
+    });
 
-    expect(actual).to.deep.equal(expected);
+    expect(actual).toEqual(expected);
   });
-
 
   it('should merge in initial data', () => {
     const html = createHTML(`
@@ -203,11 +194,11 @@ describe('extractFromHTML', () => {
         tags: ['default'],
         link: {
           tested: false,
-        }
+        },
       },
     );
 
-    expect(actual).to.deep.equal(expected);
+    expect(actual).toEqual(expected);
   });
 
   it('should extract from own element', () => {
@@ -240,21 +231,18 @@ describe('extractFromHTML', () => {
       },
     ];
 
-    const actual = extractFromHTML(
-      html,
-      {
-        list: true,
-        query: '.grid-item',
-        data: {
-          title: 'h2',
-        },
-        self: {
-          id: { attr: 'data-id', convert: 'number'}
-        },
+    const actual = extractFromHTML(html, {
+      list: true,
+      query: '.grid-item',
+      self: {
+        id: { attr: 'data-id', convert: 'number' },
       },
-    );
+      data: {
+        title: 'h2',
+      },
+    });
 
-    expect(actual).to.deep.equal(expected);
+    expect(actual).toEqual(expected);
   });
 
   it('should extract from own element when passed directly', () => {
@@ -269,34 +257,33 @@ describe('extractFromHTML', () => {
       title: 'title 1',
     };
 
-    const actual = extractFromHTML(
-      html,
-      {
-        data: {
-          title: 'h2',
-        },
-        self: {
-          id: { attr: 'data-id', convert: 'number'}
-        },
+    const actual = extractFromHTML(html, {
+      self: {
+        id: { attr: 'data-id', convert: 'number' },
       },
-    );
+      data: {
+        title: 'h2',
+      },
+    });
 
-    expect(actual).to.deep.equal(expected);
+    expect(actual).toEqual(expected);
   });
 
   it('should throw in missing first parameter', () => {
     const actual = () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: intentional
       extractFromHTML();
     };
-    expect(actual).to.throw('Missing first parameter \'container\'');
+    expect(actual).toThrow("Missing first parameter 'container'");
   });
 
   it('should throw in missing second parameter', () => {
     const actual = () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: intentional
       extractFromHTML(document.createElement('div'));
     };
-    expect(actual).to.throw('Missing second parameter \'config\'');
+    expect(actual).toThrow("Missing second parameter 'config'");
   });
 });

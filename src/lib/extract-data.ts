@@ -1,50 +1,51 @@
-import { extractFromElement, getSchemaKeys } from './extract-from-element';
-import { validateSchema } from './validation';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { extractFromElement } from './extract-from-element';
+import type { ExtractDataConfig } from './types';
 
-export function extractData(parent, infoOrQuery, config = {}) {
+/**
+ * Small wrapper util to normalize the config for each data item
+ * - selects the element based on the passed query
+ * - calls extractFromElement to extract the information from the targeted (child?) element
+ *
+ * @param parent
+ * @param queryOrConfig
+ * @param config
+ */
+export function extractData(parent: HTMLElement | null, config: string | ExtractDataConfig): any;
+export function extractData(
+  parent: HTMLElement | null,
+  query: string,
+  config: Omit<ExtractDataConfig, 'query'>,
+): any;
+export function extractData(
+  parent: HTMLElement | null,
+  queryOrConfig: string | ExtractDataConfig,
+  config?: Omit<ExtractDataConfig, 'query'>,
+): any {
   if (!parent) {
     throw new Error("Missing first parameter 'parent'");
   }
-  if (!infoOrQuery) {
+  if (!queryOrConfig) {
     throw new Error("Missing second parameter 'config'");
   }
 
   let mergedConfig;
-  if (typeof infoOrQuery === 'string') {
+  if (typeof queryOrConfig === 'string') {
     mergedConfig = {
-      ...config,
-      query: infoOrQuery,
+      ...(config || {}),
+      query: queryOrConfig,
     };
   } else {
-    mergedConfig = infoOrQuery;
+    mergedConfig = queryOrConfig;
   }
 
-  const validatedConfig = validateSchema(mergedConfig, dataSchema);
-
-  const { query, list, ...finalConfig } = <any>validatedConfig;
+  const { query, list, ...finalConfig } = mergedConfig;
 
   if (!list) {
-    return extractFromElement(parent.querySelector(query), finalConfig);
+    return extractFromElement(parent.querySelector<HTMLElement>(query), finalConfig);
   }
 
-  return Array.from(parent.querySelectorAll(query)).map(child =>
+  return Array.from(parent.querySelectorAll<HTMLElement>(query)).map((child) =>
     extractFromElement(child, finalConfig),
   );
-}
-
-const dataSchema = (() => {
-  const isProd = process.env.NODE_ENV === 'production';
-  /* istanbul ignore if */
-  if (isProd) return {};
-
-  const Joi = require('./vendor/joi-browser');
-  return Joi.object().keys({
-    ...getSchemaKeys(),
-    query: Joi.string().required(),
-    list: Joi.bool(),
-  });
-})();
-
-export function getSchema(): any {
-  return dataSchema;
 }
