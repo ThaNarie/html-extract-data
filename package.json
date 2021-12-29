@@ -1,5 +1,5 @@
 {
-  "version": "1.2.2",
+  "version": "1.2.3",
   "name": "html-extract-data",
   "description": "Extract data from the DOM using a JSON config",
   "author": "Arjan van Wijk <thanarie@gmail.com> (https://github.com/thanarie)",
