@@ -22,6 +22,10 @@
     "require": "./dist/cjs/index.js",
     "import": "./dist/esm/index.js"
   },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
   "types": "./dist/esm/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm-run-all -s validate build",
