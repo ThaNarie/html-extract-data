@@ -8,9 +8,5 @@ node_modules/
 .eslintcache
 /coverage/
 /.nyc_output/
-/tmp/
-/decl/
 
-/lib
-/index.js
-/index.d.ts
+/dist
