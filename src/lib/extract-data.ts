@@ -7,6 +7,10 @@ import type { ExtractDataConfig } from './types';
  * - selects the element based on the passed query
  * - calls extractFromElement to extract the information from the targeted (child?) element
  *
+ * when param 1 = string - we return the text contents (because of empty config object)
+ * when param 1 = string and param 2 = config - we merge them into 1 object
+ * when param 1 is object - it already contains everything
+ *
  * @param parent
  * @param queryOrConfig
  * @param config
